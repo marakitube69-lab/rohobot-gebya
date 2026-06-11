@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ሮሆቦት ገበያ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+body{font-family:'Noto Sans Ethiopic','Segoe UI',sans-serif;background:#f0f4ff;max-width:480px;margin:0 auto}
+::-webkit-scrollbar{display:none}
+select{appearance:none}
+input::placeholder,textarea::placeholder{color:#94a3b8}
+input:focus,textarea:focus,select:focus{border-color:#3b82f6!important;box-shadow:0 0 0 3px rgba(59,130,246,0.12)!important;outline:none}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const{useState,useRef,useEffect}=React;
+
+const T={
+AM:{app:"ሮሆቦት ገበያ",tag:"ሽጥ • ግዛ • አስተማምን",login:"ግባ",reg:"ተመዝገብ",phone:"ስልክ ቁጥር",pass:"የሚስጥር ቁልፍ",name:"ሙሉ ስም",loc:"አካባቢ",isSeller:"ሻጭ ነኝ",isBuyer:"ገዢ ነኝ",home:"ዋና",sell:"ሽጥ",chats:"ውይይቶች",wallet:"ዋሌት",admin:"አስተዳዳሪ",search:"ፈልግ...",all:"ሁሉም",post:"አስተዋውቅ",buy:"ግዛ",contact:"አነጋግር",report:"ሪፖርት",escrow:"🔒 Escrow ክፍያ",escInfo:"ገዢ ዋሌቱ ይከፍላል → App ይይዘዋል → እቃ ሲደርስ ሻጭ ያገኛል",payWallet:"ከዋሌት ክፈል",confirmBuy:"ግዢ አረጋግጥ",noItems:"ምንም እቃ አልተገኘም",photoUrl:"ፎቶ ሊንክ (URL)",desc:"መግለጫ",cat:"ምድብ",ttl:"ርዕስ",ver:"✓ የተረጋገጠ",dash:"ዳሽቦርድ",users:"ተጠቃሚዎች",listings:"ዝርዝሮች",reports:"ሪፖርቶች",txns:"ግብይቶች",approve:"ፍቀድ",reject:"አትፍቀድ",ban:"ዘጋ",unban:"ክፈት",typeMsg:"መልዕክት ጻፍ...",myListings:"ዝርዝሮቼ",seller:"ሻጭ",buyer:"ገዢ",birr:"ብር",views:"ተመልካቾች",newI:"አዲስ",usedI:"ጥቅም ላይ",cond:"ሁኔታ",comm:"ኮሚሽን (7%)",total:"ጠቅላላ",deposit:"ገንዘብ ጨምር",withdraw:"ገንዘብ አውጣ",balance:"ቀሪ ሂሳብ",txHist:"የግብይት ታሪክ",depAmt:"መጠን ምረጥ",depWith:"ለ ገቢ",wdWith:"ወደ",wdAmt:"ምን ያህል?",confirmDep:"አስቀምጥ",confirmWd:"አውጣ",minBal:"ዝቅተኛ ቀሪ 50 ብር ሁሌ ይቀር",lowBal:"ቀሪ ሂሳብ በቂ አይደለም (ዝቅ. 50ብር)!",release:"ለሻጭ ፍቀድ",cancel:"ሰርዝ",sendRep:"ሪፖርት ላክ",reasonPh:"ምክንያቱን ጻፍ...",online:"ንቁ",noChats:"ምንም ውይይት የለም",sales:"ሽያጮች",welcome:"እንኳን ደህና መጣህ",wCreds:"ስልክ ወይስ ቁልፍ ስህተት!",banned:"መለያህ ታግዷል!",fillAll:"ሁሉንም ሜዳ ይሙሉ!",phoneEx:"ቁጥሩ ተመዝግቧል!",posted:"እቃዎ ተለጠፈ ✅",bought:"ግዢ ተፈፀመ ✅",repSent:"ሪፖርት ✅",deposited:"ተቀምጧል ✅",withdrawn:"ወጥቷል ✅",commPool:"ኮሚሽን",escPool:"Escrow ላይ",totVol:"ጠቅላላ ዝውውር",active:"ንቁ",susp:"ታግዷል",available:"ወጪ የሚሆን",minNote:"(50ብር ሁሌ ይቀራል)"},
+EN:{app:"Rohobot Gebya",tag:"Sell • Buy • Trust",login:"Login",reg:"Register",phone:"Phone",pass:"Password",name:"Full Name",loc:"Location",isSeller:"I'm a Seller",isBuyer:"I'm a Buyer",home:"Home",sell:"Sell",chats:"Chats",wallet:"Wallet",admin:"Admin",search:"Search...",all:"All",post:"Post Item",buy:"Buy",contact:"Contact",report:"Report",escrow:"🔒 Escrow",escInfo:"Buyer pays → App holds → Seller gets paid on delivery",payWallet:"Pay from Wallet",confirmBuy:"Confirm Purchase",noItems:"No items found",photoUrl:"Photo URL",desc:"Description",cat:"Category",ttl:"Title",ver:"✓ Verified",dash:"Dashboard",users:"Users",listings:"Listings",reports:"Reports",txns:"Transactions",approve:"Approve",reject:"Reject",ban:"Ban",unban:"Unban",typeMsg:"Type a message...",myListings:"My Listings",seller:"Seller",buyer:"Buyer",birr:"Birr",views:"Views",newI:"New",usedI:"Used",cond:"Condition",comm:"Commission (7%)",total:"Total",deposit:"Deposit",withdraw:"Withdraw",balance:"Balance",txHist:"Transaction History",depAmt:"Select Amount",depWith:"Via",wdWith:"To",wdAmt:"How much?",confirmDep:"Deposit",confirmWd:"Withdraw",minBal:"Min 50 Birr always stays",lowBal:"Insufficient balance (min 50 Birr)!",release:"Release to Seller",cancel:"Cancel",sendRep:"Send Report",reasonPh:"Write reason...",online:"Online",noChats:"No conversations",sales:"Sales",welcome:"Welcome",wCreds:"Wrong credentials!",banned:"Account banned!",fillAll:"Fill all fields!",phoneEx:"Phone exists!",posted:"Posted ✅",bought:"Purchased ✅",repSent:"Reported ✅",deposited:"Deposited ✅",withdrawn:"Withdrawn ✅",commPool:"Commission",escPool:"In Escrow",totVol:"Total Volume",active:"Active",susp:"Suspended",available:"Available",minNote:"(50 Birr stays)"},
+TI:{app:"ሮሆቦት ገበያ",tag:"ሸይጥ • ዓዲ • እምነ",login:"እቶ",reg:"ተመዝገብ",phone:"ቁጽሪ ስልኪ",pass:"ምስጢር",name:"ምሉእ ስም",loc:"ቦታ",isSeller:"ሸያጢ እየ",isBuyer:"ዓዳጊ እየ",home:"ቤት",sell:"ሸይጥ",chats:"ዘተታት",wallet:"ዋሌት",admin:"ኣካያዲ",search:"ድለ...",all:"ኩሎም",post:"ልጠፍ",buy:"ዓዲ",contact:"ተወከስ",report:"ሪፖርት",escrow:"🔒 Escrow",escInfo:"ዓዳጊ ይኸፍል → App ይሕዝ → ሸያጢ ይቕበል",payWallet:"ካብ ዋሌት",confirmBuy:"ኣረጋግጽ",noItems:"ኣቕሓ የሎን",photoUrl:"ፎቶ ሊንክ",desc:"መግለጺ",cat:"ዓይነት",ttl:"ርእሲ",ver:"✓ ዝተረጋገጸ",dash:"ዳሽቦርድ",users:"ተጠቀምቲ",listings:"ኣቕሓታት",reports:"ሪፖርት",txns:"ክፍሊታት",approve:"ፍቀድ",reject:"ኣይፋልን",ban:"ዕጸዎ",unban:"ክፈቶ",typeMsg:"ጽሓፍ...",myListings:"ዝርዝረይ",seller:"ሸያጢ",buyer:"ዓዳጊ",birr:"ብር",views:"ምልከታ",newI:"ሓዲሽ",usedI:"ዝተጠቐሰ",cond:"ኩነታት",comm:"ኮሚሽን (7%)",total:"ጠቕላላ",deposit:"ወስኽ",withdraw:"ኣውጻእ",balance:"ሒሳብ",txHist:"ታሪኽ",depAmt:"መጠን",depWith:"ብ",wdWith:"ናብ",wdAmt:"ክንደይ?",confirmDep:"ኣቐምጥ",confirmWd:"ኣውጻእ",minBal:"ዝቕነስ 50ብር ይተርፍ",lowBal:"ሒሳብ ኣይኣኽልን!",release:"ን ሸያጢ ፍቀድ",cancel:"ሰርዝ",sendRep:"ሪፖርት ስደድ",reasonPh:"ምኽንያት...",online:"ንጡፍ",noChats:"ዘተ የሎን",sales:"ሽያጣት",welcome:"ብደሓን",wCreds:"ስህተት!",banned:"ታጊዱ!",fillAll:"ኹሉ ሜዳ!",phoneEx:"ቁጽሪ ኣሎ!",posted:"ተለጢፉ ✅",bought:"ተዓዲጉ ✅",repSent:"ሪፖርት ✅",deposited:"ተወሲኹ ✅",withdrawn:"ወጺኡ ✅",commPool:"ኮሚሽን",escPool:"Escrow",totVol:"ጠቕላላ",active:"ንጡፍ",susp:"ታጊዱ",available:"ዝወጽእ",minNote:"(50ብር ይተርፍ)"}
+};
+
+const CATS=["ልብስ","ቤት እቃ","ኤሌክትሮኒክስ","መኪና","መጽሐፍ","ስፖርት","ጌጣጌጥ","ምግብ","ሌላ"];
+const CI={"ልብስ":"👗","ቤት እቃ":"🏠","ኤሌክትሮኒክስ":"📱","መኪና":"🚗","መጽሐፍ":"📚","ስፖርት":"⚽","ጌጣጌጥ":"💍","ምግብ":"🍲","ሌላ":"📦"};
+const PAYS=["Telebirr","CBE Birr","Abyssinia Bank"];
+const DEP=[500,1000,2000,5000,10000,50000];
+const MIN_BAL=50;
+const P={bg:"#f0f4ff",card:"#ffffff",navy:"#0a1628",blue:"#1d4ed8",sky:"#3b82f6",indigo:"#4338ca",lite:"#eff6ff",pale:"#f8faff",border:"#e2e8f0",gold:"#d97706",goldL:"#fef3c7",goldD:"#92400e",grn:"#059669",grnL:"#ecfdf5",grnD:"#065f46",red:"#dc2626",redL:"#fef2f2",ink:"#0f172a",mid:"#64748b",soft:"#94a3b8"};
+const fp=n=>Number(n||0).toLocaleString("en-ET")+" ብር";
+const st=r=>"★".repeat(Math.round(r||0))+"☆".repeat(5-Math.round(r||0));
+const td=()=>new Date().toISOString().slice(0,10);
+const tt=()=>new Date().toLocaleTimeString("en",{hour:"2-digit",minute:"2-digit"});
+const uid=()=>"i"+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+
+const USERS0=[
+  {id:"admin",name:"Rohobot Admin",phone:"0939943070",password:"099280",role:"admin",loc:"አዲስ አበባ",joined:"2024-01-01",rating:5,verified:true,banned:false,wallet:0,wtx:[]},
+  {id:"admin2",name:"Rohobot Admin 2",phone:"0991362418",password:"099280",role:"admin",loc:"አዲስ አበባ",joined:"2024-01-01",rating:5,verified:true,banned:false,wallet:0,wtx:[]},
+  {id:"u1",name:"አበበ ከበደ",phone:"0911111111",password:"1234",role:"seller",loc:"ቦሌ",joined:"2024-02-10",rating:4.5,verified:true,banned:false,wallet:25000,wtx:[{id:"w1",type:"deposit",amt:25000,note:"ተቀምጧል",date:"2024-06-01",via:"Telebirr"}]},
+  {id:"u2",name:"ሰናይት ታደሰ",phone:"0922222222",password:"1234",role:"buyer",loc:"ፒያሳ",joined:"2024-03-05",rating:4.0,verified:false,banned:false,wallet:85000,wtx:[{id:"w2",type:"deposit",amt:85000,note:"ተቀምጧል",date:"2024-06-01",via:"CBE Birr"}]},
+];
+const ITEMS0=[
+  {id:"l1",title:"iPhone 13 Pro",price:55000,cat:"ኤሌክትሮኒክስ",desc:"128GB፣ ጥሩ ሁኔታ፣ ሙሉ accessories።",sid:"u1",loc:"ቦሌ",photo:"📱",date:"2024-06-01",views:142,status:"active",cond:"used"},
+  {id:"l2",title:"Toyota Vitz 2012",price:850000,cat:"መኪና",desc:"ሙሉ ሰነድ፣ ጥሩ ሁኔታ።",sid:"u1",loc:"4 ኪሎ",photo:"🚗",date:"2024-06-02",views:380,status:"active",cond:"used"},
+  {id:"l3",title:"ባህላዊ ቀሚስ",price:2200,cat:"ልብስ",desc:"እጅ የሰፋ፣ ነጭ ቀለም።",sid:"u2",loc:"ፒያሳ",photo:"👗",date:"2024-06-03",views:67,status:"active",cond:"new"},
+  {id:"l4",title:"MacBook Pro M1",price:120000,cat:"ኤሌክትሮኒክስ",desc:"M1 Pro፣ 16GB RAM፣ 512GB SSD።",sid:"u1",loc:"ቦሌ",photo:"💻",date:"2024-06-05",views:210,status:"active",cond:"used"},
+  {id:"l5",title:"ወርቅ ሐብል 21k",price:18000,cat:"ጌጣጌጥ",desc:"21k ወርቅ ሐብል፣ 18g።",sid:"u2",loc:"ፒያሳ",photo:"✨",date:"2024-06-06",views:88,status:"active",cond:"new"},
+];
+const TXNS0=[{id:"t1",lid:"l1",title:"iPhone 13 Pro",bid:"u2",sid:"u1",amt:55000,comm:3850,status:"escrow",date:"2024-06-02"}];
+const REPS0=[{id:"r1",lid:"l2",title:"Toyota Vitz 2012",rid:"u2",reason:"ምስሉ ስህተት",status:"pending",date:"2024-06-03"}];
+const CHATS0=[{id:"c1",pts:["u2","u1"],msgs:[{from:"u2",txt:"ስለ iPhone ፎቶ ማሳየት ትችላለህ?",t:"10:30"},{from:"u1",txt:"አዎ! ጥሩ ሁኔታ ነው።",t:"10:35"}]}];
+
+const INP={width:"100%",padding:"13px 16px",borderRadius:14,border:`1.5px solid ${P.border}`,fontSize:14,fontFamily:"inherit",boxSizing:"border-box",background:"#fff",color:P.ink};
+const CARD={background:"#fff",borderRadius:22,boxShadow:"0 2px 20px rgba(10,22,40,.06)",border:`1px solid ${P.border}`};
+
+function App(){
+  const[lang,setLang]=useState("AM");
+  const[page,setPage]=useState("auth");
+  const[isLogin,setIsLogin]=useState(true);
+  const[me,setMe]=useState(null);
+  const[users,setUsers]=useState(USERS0);
+  const[items,setItems]=useState(ITEMS0);
+  const[txns,setTxns]=useState(TXNS0);
+  const[reps,setReps]=useState(REPS0);
+  const[chats,setChats]=useState(CHATS0);
+  const[selItem,setSelItem]=useState(null);
+  const[chatId,setChatId]=useState(null);
+  const[aTab,setATab]=useState("dash");
+  const[cat,setCat]=useState("ሁሉም");
+  const[q,setQ]=useState("");
+  const[modal,setModal]=useState(null);
+  const[toast,setToast]=useState(null);
+  const[depAmt,setDepAmt]=useState(1000);
+  const[depCustom,setDepCustom]=useState("");
+  const[depVia,setDepVia]=useState("Telebirr");
+  const[wdAmt,setWdAmt]=useState("");
+  const[wdVia,setWdVia]=useState("Telebirr");
+  const[repReason,setRepReason]=useState("");
+  const[sellF,setSellF]=useState({title:"",price:"",cat:"ኤሌክትሮኒክስ",desc:"",loc:"",photo:"",cond:"used"});
+  const[authF,setAuthF]=useState({name:"",phone:"",pass:"",role:"buyer",loc:""});
+  const[msgTxt,setMsgTxt]=useState("");
+  const endRef=useRef(null);
+  const t=T[lang];
+
+  const cur=()=>users.find(u=>u.id===me?.id)||me||{};
+  const upU=(id,patch)=>{setUsers(p=>p.map(u=>u.id===id?{...u,...patch}:u));if(id===me?.id)setMe(p=>({...p,...patch}));};
+  const pop=(m,err)=>{setToast({m,err});setTimeout(()=>setToast(null),3000)};
+
+  const doLogin=()=>{
+    const u=users.find(x=>x.phone===authF.phone&&x.password===authF.pass);
+    if(!u){pop(t.wCreds,1);return}
+    if(u.banned){pop(t.banned,1);return}
+    setMe(u);setPage(u.role==="admin"?"admin":"home");pop(`${t.welcome}, ${u.name}! 🎉`);
+  };
+  const doReg=()=>{
+    if(!authF.name||!authF.phone||!authF.pass||!authF.loc){pop(t.fillAll,1);return}
+    if(users.find(u=>u.phone===authF.phone)){pop(t.phoneEx,1);return}
+    const nu={id:uid(),...authF,wallet:0,wtx:[],joined:td(),rating:0,verified:false,banned:false};
+    setUsers(p=>[...p,nu]);setMe(nu);setPage("home");pop(`${t.welcome}, ${nu.name}! 🎉`);
+  };
+  const doDep=()=>{
+    const amt=depCustom?Number(depCustom):depAmt;
+    if(!amt||amt<1){pop(t.fillAll,1);return}
+    const tx={id:uid(),type:"deposit",amt,note:"ተቀምጧል",date:td(),via:depVia};
+    const nw=(cur().wallet||0)+amt;
+    upU(me.id,{wallet:nw,wtx:[tx,...(cur().wtx||[])]});
+    setModal(null);setDepCustom("");pop(t.deposited);
+  };
+  const doWd=()=>{
+    const amt=Number(wdAmt);
+    const avail=(cur().wallet||0)-MIN_BAL;
+    if(!amt||amt<1){pop(t.fillAll,1);return}
+    if(amt>avail){pop(t.lowBal,1);return}
+    const tx={id:uid(),type:"withdraw",amt:-amt,note:"ወጥቷል",date:td(),via:wdVia};
+    upU(me.id,{wallet:(cur().wallet||0)-amt,wtx:[tx,...(cur().wtx||[])]});
+    setModal(null);setWdAmt("");pop(t.withdrawn);
+  };
+  const doBuy=()=>{
+    if(!selItem)return;
+    const comm=Math.round(selItem.price*.07);
+    const total=selItem.price+comm;
+    const avail=(cur().wallet||0)-MIN_BAL;
+    if(avail<total){pop(t.lowBal,1);return}
+    const tx={id:uid(),type:"purchase",amt:-(total),note:`ግዢ: ${selItem.title}`,date:td(),via:"wallet"};
+    upU(me.id,{wallet:(cur().wallet||0)-total,wtx:[tx,...(cur().wtx||[])]});
+    const nt={id:uid(),lid:selItem.id,title:selItem.title,bid:me.id,sid:selItem.sid,amt:selItem.price,comm,status:"escrow",date:td()};
+    setTxns(p=>[...p,nt]);setModal(null);pop(t.bought);
+  };
+  const doRelease=(tx)=>{
+    setTxns(p=>p.map(x=>x.id===tx.id?{...x,status:"completed"}:x));
+    const stx={id:uid(),type:"sale",amt:tx.amt,note:`ሽያጭ: ${tx.title}`,date:td(),via:"escrow"};
+    const seller=users.find(u=>u.id===tx.sid);
+    upU(tx.sid,{wallet:(seller?.wallet||0)+tx.amt,wtx:[stx,...(seller?.wtx||[])]});
+    const adm=users.find(u=>u.id==="admin");
+    const atx={id:uid(),type:"commission",amt:tx.comm,note:`ኮሚሽን: ${tx.title}`,date:td()};
+    upU("admin",{wallet:(adm?.wallet||0)+tx.comm,wtx:[atx,...(adm?.wtx||[])]});
+    pop("✅ ተፈቅዷል!");
+  };
+  const doPost=()=>{
+    if(!sellF.title||!sellF.price||!sellF.loc){pop(t.fillAll,1);return}
+    const ni={id:uid(),...sellF,price:Number(sellF.price),sid:me.id,date:td(),views:0,status:"active",photo:sellF.photo||CI[sellF.cat]||"📦"};
+    setItems(p=>[...p,ni]);setSellF({title:"",price:"",cat:"ኤሌክትሮኒክስ",desc:"",loc:"",photo:"",cond:"used"});
+    setPage("home");pop(t.posted);
+  };
+  const doReport=()=>{
+    if(!repReason){pop(t.fillAll,1);return}
+    setReps(p=>[...p,{id:uid(),lid:selItem.id,title:selItem.title,rid:me.id,reason:repReason,status:"pending",date:td()}]);
+    setModal(null);setRepReason("");pop(t.repSent);
+  };
+  const doSend=()=>{
+    if(!msgTxt.trim())return;
+    const nm={from:me.id,txt:msgTxt,t:tt()};
+    const ex=chats.find(c=>c.id===chatId);
+    if(ex){setChats(p=>p.map(c=>c.id===chatId?{...c,msgs:[...c.msgs,nm]}:c));}
+    else{const nc={id:uid(),pts:[me.id,chatId],msgs:[nm]};setChats(p=>[...p,nc]);setChatId(nc.id);}
+    setMsgTxt("");setTimeout(()=>endRef.current&&endRef.current.scrollIntoView({behavior:"smooth"}),80);
+  };
+  const goChat=(sid)=>{
+    const ex=chats.find(c=>c.pts.includes(me.id)&&c.pts.includes(sid));
+    setChatId(ex?ex.id:sid);setPage("chat");
+  };
+
+  const filtered=items.filter(l=>l.status==="active"&&(cat==="ሁሉም"||l.cat===cat)&&(l.title.includes(q)||l.desc.includes(q)||l.cat.includes(q)));
+  const myChats=chats.filter(c=>c.pts.includes(me?.id));
+  const comm=selItem?Math.round(selItem.price*.07):0;
+  const c=cur();
+  const avail=Math.max(0,(c.wallet||0)-MIN_BAL);
+
+  if(!me)return(
+    <div style={{fontFamily:"'Noto Sans Ethiopic','Segoe UI',sans-serif",minHeight:"100vh",background:P.navy,display:"flex",alignItems:"center",justifyContent:"center",padding:20,position:"relative",overflow:"hidden"}}>
+      <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none"}}>
+        {["-15%,-10%,55%","-65%,-5%,40%","10%,65%,30%","50%,55%,45%"].map((s,i)=>{const[l,t2,w]=s.split(",");return(<div key={i} style={{position:"absolute",left:l,top:t2,width:w,height:w,borderRadius:"50%",background:`rgba(29,78,216,${[.12,.08,.06,.05][i]})`,filter:"blur(40px)"}}/>);})}
+      </div>
+      <div style={{width:"100%",maxWidth:400,position:"relative",zIndex:1}}>
+        <div style={{display:"flex",justifyContent:"center",gap:8,marginBottom:32}}>
+          {["AM","EN","TI"].map(l=>(<button key={l} onClick={()=>setLang(l)} style={{padding:"7px 18px",borderRadius:22,border:`1.5px solid ${lang===l?"rgba(255,255,255,0.7)":"rgba(255,255,255,0.15)"}`,background:lang===l?"rgba(255,255,255,0.12)":"transparent",color:"#fff",fontWeight:800,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>{l}</button>))}
+        </div>
+        <div style={{textAlign:"center",marginBottom:36}}>
+          <div style={{width:88,height:88,borderRadius:28,background:"rgba(255,255,255,0.08)",border:"1.5px solid rgba(255,255,255,0.15)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px",boxShadow:"0 20px 60px rgba(0,0,0,0.4)",fontSize:44}}>🛍️</div>
+          <div style={{fontSize:28,fontWeight:900,color:"#fff"}}>{t.app}</div>
+          <div style={{fontSize:13,color:"rgba(255,255,255,0.45)",marginTop:8,letterSpacing:3}}>{t.tag}</div>
+          <div style={{fontSize:11,color:"rgba(255,255,255,0.25)",marginTop:4}}>rohobotgebya.org.et</div>
+        </div>
+        <div style={{background:"rgba(255,255,255,0.05)",backdropFilter:"blur(24px)",borderRadius:24,padding:24,border:"1.5px solid rgba(255,255,255,0.1)"}}>
+          <div style={{display:"flex",background:"rgba(255,255,255,0.07)",borderRadius:14,padding:4,marginBottom:20}}>
+            {[[true,t.login],[false,t.reg]].map(([m,lb])=>(<button key={String(m)} onClick={()=>setIsLogin(m)} style={{flex:1,padding:"11px",borderRadius:11,border:"none",background:isLogin===m?"rgba(255,255,255,0.92)":"transparent",color:isLogin===m?P.navy:"rgba(255,255,255,0.65)",fontWeight:800,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{lb}</button>))}
+          </div>
+          <div style={{display:"flex",flexDirection:"column",gap:12}}>
+            {!isLogin&&<>
+              <input style={{...INP,background:"rgba(255,255,255,0.08)",border:"1.5px solid rgba(255,255,255,0.15)",color:"#fff"}} placeholder={t.name} value={authF.name} onChange={e=>setAuthF(p=>({...p,name:e.target.value}))}/>
+              <input style={{...INP,background:"rgba(255,255,255,0.08)",border:"1.5px solid rgba(255,255,255,0.15)",color:"#fff"}} placeholder={t.loc} value={authF.loc} onChange={e=>setAuthF(p=>({...p,loc:e.target.value}))}/>
+              <div style={{display:"flex",gap:8}}>
+                {[["seller","🏷️",t.isSeller],["buyer","🛒",t.isBuyer]].map(([r,ic,lb])=>(<button key={r} onClick={()=>setAuthF(p=>({...p,role:r}))} style={{flex:1,padding:"11px",borderRadius:12,border:`1.5px solid ${authF.role===r?"rgba(255,255,255,0.6)":"rgba(255,255,255,0.15)"}`,background:authF.role===r?"rgba(255,255,255,0.15)":"transparent",color:"rgba(255,255,255,0.8)",fontWeight:700,cursor:"pointer",fontFamily:"inherit",fontSize:12}}>{ic} {lb}</button>))}
+              </div>
+            </>}
+            <input style={{...INP,background:"rgba(255,255,255,0.08)",border:"1.5px solid rgba(255,255,255,0.15)",color:"#fff"}} placeholder={t.phone} value={authF.phone} onChange={e=>setAuthF(p=>({...p,phone:e.target.value}))}/>
+            <input style={{...INP,background:"rgba(255,255,255,0.08)",border:"1.5px solid rgba(255,255,255,0.15)",color:"#fff"}} type="password" placeholder={t.pass} value={authF.pass} onChange={e=>setAuthF(p=>({...p,pass:e.target.value}))}/>
+            <button onClick={isLogin?doLogin:doReg} style={{background:`linear-gradient(135deg,${P.sky},${P.blue})`,color:"#fff",border:"none",borderRadius:14,padding:"15px",fontWeight:900,fontSize:16,cursor:"pointer",fontFamily:"inherit",boxShadow:`0 8px 32px rgba(59,130,246,0.5)`,marginTop:4}}>{isLogin?t.login:t.reg}</button>
+            {isLogin&&<div style={{textAlign:"center",fontSize:11,color:"rgba(255,255,255,0.25)"}}>rohobotgebya.org.et</div>}
+          </div>
+        </div>
+      </div>
+      {toast&&<div style={{position:"fixed",bottom:30,left:"50%",transform:"translateX(-50%)",background:toast.err?P.red:P.grn,color:"#fff",padding:"13px 26px",borderRadius:26,fontWeight:700,fontSize:13,zIndex:999,whiteSpace:"nowrap"}}>{toast.m}</div>}
+    </div>
+  );
+
+  return(
+    <div style={{fontFamily:"'Noto Sans Ethiopic','Segoe UI',sans-serif",minHeight:"100vh",background:P.bg,color:P.ink,maxWidth:480,margin:"0 auto",position:"relative"}}>
+      <header style={{background:`linear-gradient(135deg,${P.navy},${P.blue})`,padding:"0 18px",position:"sticky",top:0,zIndex:60,boxShadow:"0 4px 30px rgba(10,22,40,.5)"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",height:58}}>
+          <div onClick={()=>setPage("home")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:10}}>
+            <div style={{width:36,height:36,borderRadius:11,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>🛍️</div>
+            <div>
+              <div style={{color:"#fff",fontWeight:900,fontSize:14}}>ሮሆቦት ገበያ</div>
+              <div style={{color:"rgba(255,255,255,0.35)",fontSize:9,letterSpacing:2}}>rohobotgebya.org.et</div>
+            </div>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:6}}>
+            {["AM","EN","TI"].map(l=>(<button key={l} onClick={()=>setLang(l)} style={{padding:"3px 8px",borderRadius:8,border:`1px solid ${lang===l?"rgba(255,255,255,0.5)":"rgba(255,255,255,0.12)"}`,background:lang===l?"rgba(255,255,255,0.12)":"transparent",color:"#fff",fontWeight:700,fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>{l}</button>))}
+            <button onClick={()=>{setMe(null);setPage("auth")}} style={{background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,padding:"5px 10px",color:"#fff",cursor:"pointer",fontSize:13}}>↩</button>
+          </div>
+        </div>
+      </header>
+
+      <div style={{paddingBottom:page==="chat"?0:80}}>
+
+      {page==="home"&&<>
+        <div style={{padding:"14px 14px 0"}}>
+          <div style={{background:`linear-gradient(135deg,${P.navy} 0%,${P.indigo} 60%,${P.blue} 100%)`,borderRadius:22,padding:"16px 18px",marginBottom:14,position:"relative",overflow:"hidden",boxShadow:`0 10px 36px rgba(10,22,40,.22)`}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <div>
+                <div style={{fontSize:13,color:"rgba(255,255,255,0.6)",marginBottom:3}}>ሰላም, {c.name} 👋</div>
+                <div style={{fontSize:11,color:"rgba(255,255,255,0.35)"}}>📍{c.loc}</div>
+              </div>
+              <div style={{textAlign:"right"}}>
+                <div style={{fontSize:10,color:"rgba(255,255,255,0.4)",letterSpacing:1}}>WALLET</div>
+                <div style={{fontSize:18,fontWeight:900,color:"#fff"}}>{fp(c.wallet)}</div>
+                <div onClick={()=>setPage("wallet")} style={{fontSize:11,color:"rgba(255,255,255,0.5)",cursor:"pointer",textDecoration:"underline"}}>ዋሌት ›</div>
+              </div>
+            </div>
+          </div>
+          <div style={{position:"relative",marginBottom:12}}>
+            <span style={{position:"absolute",left:14,top:"50%",transform:"translateY(-50%)",fontSize:15,opacity:.4}}>🔍</span>
+            <input value={q} onChange={e=>setQ(e.target.value)} placeholder={t.search} style={{...INP,paddingLeft:42,borderRadius:16}}/>
+          </div>
+          <div style={{display:"flex",gap:7,overflowX:"auto",paddingBottom:8,marginBottom:8}}>
+            {["ሁሉም",...CATS].map(c2=>(<button key={c2} onClick={()=>setCat(c2)} style={{flexShrink:0,padding:"6px 12px",borderRadius:18,border:`1.5px solid ${cat===c2?P.blue:P.border}`,background:cat===c2?P.blue:"#fff",color:cat===c2?"#fff":P.mid,fontWeight:700,fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>{c2!=="ሁሉም"?CI[c2]+" ":""}{c2}</button>))}
+          </div>
+          <div style={{fontSize:12,color:P.soft,marginBottom:12}}>{filtered.length} እቃ</div>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,padding:"0 14px"}}>
+          {filtered.length===0?(<div style={{gridColumn:"1/-1",textAlign:"center",padding:"60px 0",color:P.soft}}><div style={{fontSize:48}}>🔍</div>{t.noItems}</div>):filtered.map(it=>{
+            const sel=users.find(u=>u.id===it.sid);
+            return(<div key={it.id} onClick={()=>{setSelItem({...it});setItems(p=>p.map(x=>x.id===it.id?{...x,views:x.views+1}:x));setPage("detail");}} style={{...CARD,borderRadius:18,overflow:"hidden",cursor:"pointer"}}>
+              <div style={{height:100,background:`linear-gradient(135deg,${P.lite},#dbeafe)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:42,position:"relative"}}>
+                {it.photo&&it.photo.startsWith("http")?<img src={it.photo} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:it.photo}
+                <div style={{position:"absolute",top:7,right:7,fontSize:10,padding:"3px 7px",borderRadius:7,fontWeight:800,color:"#fff",background:it.cond==="new"?P.grn:P.gold}}>{it.cond==="new"?t.newI:t.usedI}</div>
+              </div>
+              <div style={{padding:"10px 12px"}}>
+                <div style={{fontSize:12,fontWeight:800,marginBottom:2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{it.title}</div>
+                <div style={{fontSize:14,fontWeight:900,color:P.blue}}>{fp(it.price)}</div>
+                <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
+                  <span style={{fontSize:10,color:P.mid}}>📍{it.loc}</span>
+                  <span style={{fontSize:10,color:P.border}}>👁{it.views}</span>
+                </div>
+                {sel&&<div style={{fontSize:10,color:P.gold,marginTop:3}}>{st(sel.rating)}</div>}
+              </div>
+            </div>);
+          })}
+        </div>
+      </>}
+
+      {page==="detail"&&selItem&&(()=>{
+        const sel=users.find(u=>u.id===selItem.sid);
+        const total=selItem.price+comm;
+        const canBuy=avail>=total;
+        return(<div style={{padding:14}}>
+          <button onClick={()=>setPage("home")} style={{background:"none",border:"none",color:P.blue,fontWeight:800,cursor:"pointer",fontSize:14,marginBottom:14,fontFamily:"inherit"}}>← {t.home}</button>
+          <div style={{...CARD,borderRadius:22,overflow:"hidden"}}>
+            <div style={{height:200,background:`linear-gradient(135deg,${P.lite},#bfdbfe)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:80,position:"relative"}}>
+              {selItem.photo&&selItem.photo.startsWith("http")?<img src={selItem.photo} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:selItem.photo}
+              <div style={{position:"absolute",bottom:10,left:10,display:"flex",gap:6}}>
+                <span style={{background:selItem.cond==="new"?P.grn:P.gold,color:"#fff",fontSize:11,padding:"4px 11px",borderRadius:8,fontWeight:800}}>{selItem.cond==="new"?t.newI:t.usedI}</span>
+              </div>
+            </div>
+            <div style={{padding:20}}>
+              <div style={{fontSize:20,fontWeight:900,marginBottom:4}}>{selItem.title}</div>
+              <div style={{fontSize:28,fontWeight:900,color:P.blue,marginBottom:6}}>{fp(selItem.price)}</div>
+              <div style={{fontSize:12,color:P.mid,marginBottom:14}}>📍{selItem.loc} • 👁{selItem.views}</div>
+              <p style={{color:"#475569",fontSize:14,lineHeight:1.8,marginBottom:18}}>{selItem.desc}</p>
+              <div style={{background:"linear-gradient(135deg,#ecfdf5,#d1fae5)",borderRadius:16,padding:16,marginBottom:18}}>
+                <div style={{fontWeight:900,color:P.grn,fontSize:13,marginBottom:8}}>{t.escrow}</div>
+                <div style={{fontSize:12,color:"#065f46",marginBottom:12}}>{t.escInfo}</div>
+                <div style={{background:"#fff",borderRadius:12,padding:"11px 14px"}}>
+                  {[["ዋጋ",fp(selItem.price),P.ink],["+"+t.comm,"+"+fp(comm),P.gold],[t.total,fp(total),P.blue]].map(([lb,v,col],i)=>(<div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderTop:i>0?`1px solid ${P.border}`:"none",fontSize:i===2?14:12}}><span style={{color:P.mid}}>{lb}</span><span style={{fontWeight:i===2?900:700,color:col}}>{v}</span></div>))}
+                </div>
+                <div style={{marginTop:10,display:"flex",justifyContent:"space-between",fontSize:12}}>
+                  <span style={{color:"#065f46"}}>💳 {fp(c.wallet)}</span>
+                  <span style={{color:canBuy?P.grn:P.red,fontWeight:700}}>{canBuy?"✓ በቂ":"✗ አይበቃም"}</span>
+                </div>
+              </div>
+              {sel&&<div style={{display:"flex",alignItems:"center",gap:12,padding:"12px 0",borderTop:`1px solid ${P.border}`,marginBottom:18}}>
+                <div style={{width:46,height:46,borderRadius:"50%",background:`linear-gradient(135deg,${P.blue},${P.navy})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:900,fontSize:17}}>{sel.name[0]}</div>
+                <div style={{flex:1}}><div style={{fontWeight:800,fontSize:14}}>{sel.name}{sel.verified&&<span style={{color:P.sky,fontSize:11,marginLeft:4}}>✓</span>}</div><div style={{fontSize:11,color:P.gold}}>{st(sel.rating)}</div></div>
+              </div>}
+              {me.id!==selItem.sid&&<>
+                <button onClick={()=>{if(!canBuy){pop(t.lowBal,1);setPage("wallet");return}setModal("buy")}} style={{background:canBuy?`linear-gradient(135deg,${P.blue},${P.navy})`:"#94a3b8",color:"#fff",border:"none",borderRadius:15,padding:"15px",fontWeight:900,fontSize:15,cursor:"pointer",width:"100%",fontFamily:"inherit",marginBottom:10,boxShadow:canBuy?`0 8px 24px rgba(29,78,216,.3)`:"none"}}>🛒 {t.buy} — {fp(total)}</button>
+                <div style={{display:"flex",gap:10}}>
+                  <button onClick={()=>goChat(selItem.sid)} style={{flex:2,background:P.lite,color:P.blue,border:`1.5px solid ${P.blue}`,borderRadius:14,padding:"13px",fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>💬 {t.contact}</button>
+                  <button onClick={()=>setModal("report")} style={{flex:1,background:P.redL,color:P.red,border:"none",borderRadius:14,padding:"13px",fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>⚠️</button>
+                </div>
+              </>}
+            </div>
+          </div>
+        </div>);
+      })()}
+
+      {page==="sell"&&<div style={{padding:14}}>
+        <div style={{fontSize:20,fontWeight:900,marginBottom:16}}>🏷️ {t.post}</div>
+        <div style={{...CARD,borderRadius:22,padding:20}}>
+          {[["title",t.ttl,"text"],["price","ዋጋ (ብር)","number"],["loc",t.loc,"text"],["photo",t.photoUrl,"text"]].map(([k,lb,tp])=>(<div key={k} style={{marginBottom:16}}><label style={{display:"block",fontSize:12,fontWeight:800,color:"#475569",marginBottom:7}}>{lb}</label><input type={tp} style={INP} value={sellF[k]} placeholder={lb} onChange={e=>setSellF(p=>({...p,[k]:e.target.value}))}/></div>))}
+          <div style={{marginBottom:16}}><label style={{display:"block",fontSize:12,fontWeight:800,color:"#475569",marginBottom:7}}>{t.cat}</label><select style={{...INP}} value={sellF.cat} onChange={e=>setSellF(p=>({...p,cat:e.target.value}))}>{CATS.map(c2=><option key={c2}>{c2}</option>)}</select></div>
+          <div style={{marginBottom:16}}><label style={{display:"block",fontSize:12,fontWeight:800,color:"#475569",marginBottom:7}}>{t.cond}</label><div style={{display:"flex",gap:8}}>{[["new","🆕 "+t.newI],["used","♻️ "+t.usedI]].map(([v,lb])=>(<button key={v} onClick={()=>setSellF(p=>({...p,cond:v}))} style={{flex:1,padding:"12px",borderRadius:12,border:`1.5px solid ${sellF.cond===v?P.blue:P.border}`,background:sellF.cond===v?P.lite:"#fff",color:sellF.cond===v?P.blue:P.mid,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>{lb}</button>))}</div></div>
+          <div style={{marginBottom:20}}><label style={{display:"block",fontSize:12,fontWeight:800,color:"#475569",marginBottom:7}}>{t.desc}</label><textarea style={{...INP,resize:"vertical"}} rows={3} value={sellF.desc} onChange={e=>setSellF(p=>({...p,desc:e.target.value}))}/></div>
+          {sellF.price&&<div style={{background:P.lite,borderRadius:12,padding:"11px 14px",marginBottom:18,border:`1px solid #bfdbfe`}}><div style={{fontSize:12,fontWeight:800,color:P.blue}}>💰 {t.comm}</div><div style={{fontSize:12,color:"#475569",marginTop:4}}>ዋጋ {fp(Number(sellF.price))} → ትቀበለዋለህ: <strong style={{color:P.blue}}>{fp(Number(sellF.price))}</strong></div></div>}
+          <button onClick={doPost} style={{background:`linear-gradient(135deg,${P.blue},${P.navy})`,color:"#fff",border:"none",borderRadius:15,padding:"15px",fontWeight:900,fontSize:15,cursor:"pointer",width:"100%",fontFamily:"inherit",boxShadow:`0 8px 24px rgba(29,78,216,.3)`}}>✅ {t.post}</button>
+        </div>
+      </div>}
+
+      {page==="wallet"&&(()=>{
+        const wtx=c.wtx||[];
+        return(<div style={{padding:14}}>
+          <div style={{background:`linear-gradient(135deg,${P.navy} 0%,${P.indigo} 55%,${P.blue} 100%)`,borderRadius:26,padding:24,marginBottom:8,position:"relative",overflow:"hidden",boxShadow:`0 20px 60px rgba(10,22,40,.4)`}}>
+            <div style={{position:"absolute",right:-30,top:-30,width:200,height:200,borderRadius:"50%",background:"rgba(255,255,255,0.06)"}}/>
+            <div style={{position:"relative",zIndex:1}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:18}}>
+                <div><div style={{fontSize:11,color:"rgba(255,255,255,0.45)",letterSpacing:2,marginBottom:6}}>BALANCE</div><div style={{fontSize:36,fontWeight:900,color:"#fff"}}>{fp(c.wallet)}</div></div>
+                <div style={{fontSize:28}}>💳</div>
+              </div>
+              <div style={{display:"flex",gap:8}}>
+                <div style={{flex:1,background:"rgba(255,255,255,0.1)",borderRadius:13,padding:"10px 13px"}}><div style={{fontSize:10,color:"rgba(255,255,255,0.45)",marginBottom:3}}>{t.available}</div><div style={{fontSize:15,fontWeight:900,color:"#fef3c7"}}>{fp(avail)}</div><div style={{fontSize:9,color:"rgba(255,255,255,0.3)",marginTop:2}}>{t.minNote}</div></div>
+                <div style={{flex:1,background:"rgba(255,255,255,0.1)",borderRadius:13,padding:"10px 13px"}}><div style={{fontSize:10,color:"rgba(255,255,255,0.45)",marginBottom:3}}>ዝቅተኛ ቀሪ</div><div style={{fontSize:15,fontWeight:900,color:"rgba(255,255,255,0.5)"}}>{fp(MIN_BAL)}</div><div style={{fontSize:9,color:"rgba(255,255,255,0.3)",marginTop:2}}>ሁሌ ይቀራል</div></div>
+              </div>
+            </div>
+          </div>
+          <div style={{background:P.goldL,border:`1px solid ${P.gold}40`,borderRadius:13,padding:"10px 15px",marginBottom:16,display:"flex",gap:8,alignItems:"center"}}><span style={{fontSize:16}}>ℹ️</span><div style={{fontSize:12,color:P.goldD,fontWeight:700}}>{t.minBal}</div></div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:20}}>
+            <button onClick={()=>setModal("deposit")} style={{background:`linear-gradient(135deg,${P.grn},#047857)`,color:"#fff",border:"none",borderRadius:15,padding:"14px",fontWeight:900,fontSize:15,cursor:"pointer",fontFamily:"inherit",boxShadow:`0 6px 20px rgba(5,150,105,.3)`}}>⬇️ {t.deposit}</button>
+            <button onClick={()=>setModal("withdraw")} style={{background:`linear-gradient(135deg,${P.gold},${P.goldD})`,color:"#fff",border:"none",borderRadius:15,padding:"14px",fontWeight:900,fontSize:15,cursor:"pointer",fontFamily:"inherit",boxShadow:`0 6px 20px rgba(217,119,6,.3)`}}>⬆️ {t.withdraw}</button>
+          </div>
+          <div style={{fontSize:14,fontWeight:900,marginBottom:12}}>📋 {t.txHist}</div>
+          {wtx.length===0?(<div style={{textAlign:"center",padding:"40px 0",color:P.soft}}><div style={{fontSize:38}}>💳</div><div style={{marginTop:8,fontSize:13}}>ምንም ግብይት የለም</div></div>):wtx.map(tx=>{
+            const isPos=tx.amt>0;
+            const icon=tx.type==="deposit"?"⬇️":tx.type==="withdraw"?"⬆️":tx.type==="sale"?"💰":tx.type==="commission"?"🏛️":"🛒";
+            return(<div key={tx.id} style={{...CARD,borderRadius:16,padding:"13px 16px",marginBottom:10,display:"flex",alignItems:"center",gap:12}}>
+              <div style={{width:44,height:44,borderRadius:13,flexShrink:0,background:isPos?P.grnL:P.redL,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>{icon}</div>
+              <div style={{flex:1}}><div style={{fontWeight:700,fontSize:13}}>{tx.note}</div><div style={{fontSize:11,color:P.mid,marginTop:2}}>{tx.date}{tx.via?` · ${tx.via}`:""}</div></div>
+              <div style={{fontWeight:900,fontSize:14,color:isPos?P.grn:P.red}}>{tx.amt>0?"+":""}{fp(tx.amt)}</div>
+            </div>);
+          })}
+        </div>);
+      })()}
+
+      {page==="chats"&&<div style={{padding:14}}>
+        <div style={{fontSize:20,fontWeight:900,marginBottom:16}}>💬 {t.chats}</div>
+        {myChats.length===0?(<div style={{textAlign:"center",padding:"60px 0",color:P.soft}}><div style={{fontSize:48}}>💬</div>{t.noChats}</div>):myChats.map(ch=>{
+          const oid=ch.pts.find(p=>p!==me.id);const other=users.find(u=>u.id===oid);const last=ch.msgs[ch.msgs.length-1];
+          return(<div key={ch.id} onClick={()=>{setChatId(ch.id);setPage("chat")}} style={{...CARD,borderRadius:18,padding:14,marginBottom:10,display:"flex",alignItems:"center",gap:12,cursor:"pointer"}}>
+            <div style={{width:48,height:48,borderRadius:"50%",background:`linear-gradient(135deg,${P.blue},${P.navy})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:900,fontSize:18,flexShrink:0}}>{other?.name[0]||"?"}</div>
+            <div style={{flex:1,overflow:"hidden"}}><div style={{fontWeight:800,fontSize:14}}>{other?.name||"..."}</div><div style={{fontSize:12,color:P.mid,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",marginTop:2}}>{last?.txt}</div></div>
+            <div style={{fontSize:11,color:P.border}}>{last?.t}</div>
+          </div>);
+        })}
+      </div>}
+
+      {page==="chat"&&(()=>{
+        const ch=chats.find(c2=>c2.id===chatId);const msgs=ch?.msgs||[];
+        const oid=ch?.pts.find(p=>p!==me.id)||chatId;const other=users.find(u=>u.id===oid);
+        return(<div style={{display:"flex",flexDirection:"column",height:"calc(100vh - 58px)"}}>
+          <div style={{padding:"12px 16px",background:"#fff",borderBottom:`1px solid ${P.border}`,display:"flex",alignItems:"center",gap:10}}>
+            <button onClick={()=>setPage("chats")} style={{background:"none",border:"none",color:P.blue,fontWeight:900,cursor:"pointer",fontFamily:"inherit",fontSize:20}}>←</button>
+            <div style={{width:40,height:40,borderRadius:"50%",background:`linear-gradient(135deg,${P.blue},${P.navy})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:900}}>{other?.name[0]||"?"}</div>
+            <div><div style={{fontWeight:800,fontSize:14}}>{other?.name||"..."}</div><div style={{fontSize:11,color:P.grn}}>● {t.online}</div></div>
+          </div>
+          <div style={{flex:1,overflowY:"auto",padding:"14px",display:"flex",flexDirection:"column",gap:10,background:"#f4f7ff"}}>
+            {msgs.map((m,i)=>{const isMe=m.from===me.id;return(<div key={i} style={{display:"flex",justifyContent:isMe?"flex-end":"flex-start"}}><div style={{maxWidth:"76%",background:isMe?`linear-gradient(135deg,${P.blue},${P.navy})`:"#fff",color:isMe?"#fff":P.ink,padding:"11px 15px",borderRadius:isMe?"18px 18px 5px 18px":"18px 18px 18px 5px",boxShadow:"0 2px 10px rgba(0,0,0,.07)",fontSize:14,lineHeight:1.5}}>{m.txt}<div style={{fontSize:10,marginTop:4,opacity:.5,textAlign:"right"}}>{m.t}</div></div></div>);})}
+            <div ref={endRef}/>
+          </div>
+          <div style={{padding:"12px 14px",background:"#fff",borderTop:`1px solid ${P.border}`,display:"flex",gap:10}}>
+            <input value={msgTxt} onChange={e=>setMsgTxt(e.target.value)} onKeyDown={e=>e.key==="Enter"&&doSend()} placeholder={t.typeMsg} style={{...INP,flex:1,borderRadius:22,padding:"12px 18px"}}/>
+            <button onClick={doSend} style={{background:`linear-gradient(135deg,${P.blue},${P.navy})`,border:"none",borderRadius:22,padding:"12px 20px",color:"#fff",fontWeight:900,cursor:"pointer",fontSize:18}}>➤</button>
+          </div>
+        </div>);
+      })()}
+
+      {page==="profile"&&<div style={{padding:14}}>
+        <div style={{background:`linear-gradient(135deg,${P.navy},${P.indigo})`,borderRadius:24,padding:22,marginBottom:16,color:"#fff",boxShadow:`0 14px 44px rgba(10,22,40,.28)`}}>
+          <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:18}}>
+            <div style={{width:64,height:64,borderRadius:20,background:"rgba(255,255,255,0.15)",border:"2px solid rgba(255,255,255,0.25)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,fontWeight:900}}>{c.name[0]}</div>
+            <div><div style={{fontSize:18,fontWeight:900}}>{c.name}</div><div style={{fontSize:12,opacity:.6}}>📍{c.loc} • {c.role==="seller"?t.seller:t.buyer}</div><div style={{fontSize:11,color:"#fef3c7",marginTop:2}}>{st(c.rating)}</div></div>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6}}>
+            {[[items.filter(l=>l.sid===me.id).length,t.myListings],[txns.filter(tx=>tx.sid===me.id&&tx.status==="completed").length,t.sales],[fp(c.wallet||0),t.balance]].map(([v,lb],i)=>(<div key={i} style={{background:"rgba(255,255,255,0.1)",borderRadius:13,padding:"10px 8px",textAlign:"center"}}><div style={{fontSize:i===2?11:18,fontWeight:900,wordBreak:"break-all"}}>{v}</div><div style={{fontSize:9,opacity:.55,marginTop:2}}>{lb}</div></div>))}
+          </div>
+        </div>
+        <div style={{fontSize:14,fontWeight:900,marginBottom:12}}>📦 {t.myListings}</div>
+        {items.filter(l=>l.sid===me.id).length===0?<div style={{textAlign:"center",padding:"40px 0",color:P.soft}}><div style={{fontSize:40}}>📦</div></div>:items.filter(l=>l.sid===me.id).map(it=>(<div key={it.id} style={{...CARD,borderRadius:16,padding:14,marginBottom:10,display:"flex",gap:12,alignItems:"center"}}>
+          <div style={{width:46,height:46,borderRadius:12,background:P.lite,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{it.photo&&it.photo.startsWith("http")?"🖼️":it.photo}</div>
+          <div style={{flex:1}}><div style={{fontWeight:800,fontSize:14}}>{it.title}</div><div style={{fontSize:13,color:P.blue,fontWeight:900}}>{fp(it.price)}</div><div style={{fontSize:11,color:P.mid,marginTop:2}}>👁{it.views} •<span style={{color:it.status==="active"?P.grn:P.red,marginLeft:4}}>{it.status==="active"?t.active:t.susp}</span></div></div>
+        </div>))}
+      </div>}
+
+      {page==="admin"&&<div style={{padding:14}}>
+        <div style={{fontSize:18,fontWeight:900,marginBottom:14}}>⚙️ Admin Panel</div>
+        <div style={{display:"flex",gap:6,marginBottom:16,overflowX:"auto",paddingBottom:4}}>
+          {[["dash","📊",t.dash],["users","👥",t.users],["listings","📦",t.listings],["reports","⚠️",t.reports],["txns","💰",t.txns]].map(([tab,ic,lb])=>(<button key={tab} onClick={()=>setATab(tab)} style={{flexShrink:0,padding:"8px 13px",borderRadius:18,border:`1.5px solid ${aTab===tab?P.blue:P.border}`,background:aTab===tab?P.blue:"#fff",color:aTab===tab?"#fff":P.mid,fontWeight:700,fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>{ic} {lb}</button>))}
+        </div>
+        {aTab==="dash"&&<>
+          <div style={{background:`linear-gradient(135deg,${P.navy},${P.blue})`,borderRadius:20,padding:20,marginBottom:14,color:"#fff"}}><div style={{fontSize:11,opacity:.5,letterSpacing:2}}>COMMISSION WALLET</div><div style={{fontSize:32,fontWeight:900,marginTop:4}}>{fp(users.find(u=>u.id==="admin")?.wallet||0)}</div></div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:14}}>
+            {[["👥",t.users,users.filter(u=>u.role!=="admin").length,P.sky],["📦",t.listings,items.filter(l=>l.status==="active").length,P.grn],["💰",t.txns,txns.length,P.gold],["⚠️",t.reports,reps.filter(r=>r.status==="pending").length,P.red]].map(([ic,lb,val,col])=>(<div key={lb} style={{...CARD,borderRadius:16,padding:16,textAlign:"center"}}><div style={{fontSize:24}}>{ic}</div><div style={{fontSize:22,fontWeight:900,color:col,marginTop:4}}>{val}</div><div style={{fontSize:11,color:P.mid,marginTop:2}}>{lb}</div></div>))}
+          </div>
+          <div style={{...CARD,borderRadius:16,padding:16}}>
+            <div style={{fontWeight:900,fontSize:14,marginBottom:12}}>💰 ፋይናንስ</div>
+            {[[t.commPool,txns.reduce((a,x)=>a+x.comm,0),P.blue],[t.escPool,txns.filter(x=>x.status==="escrow").reduce((a,x)=>a+x.amt,0),P.gold],[t.totVol,txns.reduce((a,x)=>a+x.amt+x.comm,0),P.grn]].map(([lb,val,col])=>(<div key={lb} style={{display:"flex",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${P.border}`,fontSize:13}}><span style={{color:P.mid}}>{lb}</span><span style={{fontWeight:900,color:col}}>{fp(val)}</span></div>))}
+          </div>
+        </>}
+        {aTab==="users"&&users.filter(u=>u.role!=="admin").map(u=>(<div key={u.id} style={{...CARD,borderRadius:16,padding:14,marginBottom:10}}>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
+            <div style={{width:42,height:42,borderRadius:"50%",background:u.banned?P.red:P.blue,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:900,fontSize:16,flexShrink:0}}>{u.name[0]}</div>
+            <div style={{flex:1}}><div style={{fontWeight:800,fontSize:14}}>{u.name}{u.verified&&<span style={{color:P.sky,fontSize:11,marginLeft:4}}>✓</span>}{u.banned&&<span style={{color:P.red,fontSize:11,marginLeft:4}}>🚫</span>}</div><div style={{fontSize:11,color:P.mid}}>{u.phone} · {u.role}</div><div style={{fontSize:12,color:P.blue,fontWeight:700}}>💳 {fp(u.wallet||0)}</div></div>
+          </div>
+          <div style={{display:"flex",gap:8}}>
+            {!u.verified&&<button onClick={()=>setUsers(p=>p.map(x=>x.id===u.id?{...x,verified:true}:x))} style={{flex:1,padding:"9px",background:P.grnL,color:P.grn,border:`1px solid ${P.grn}40`,borderRadius:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit",fontSize:12}}>✓ {t.approve}</button>}
+            <button onClick={()=>setUsers(p=>p.map(x=>x.id===u.id?{...x,banned:!x.banned}:x))} style={{flex:1,padding:"9px",background:u.banned?P.grnL:P.redL,color:u.banned?P.grn:P.red,border:`1px solid ${u.banned?P.grn:P.red}40`,borderRadius:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit",fontSize:12}}>{u.banned?"✓ "+t.unban:"🚫 "+t.ban}</button>
+          </div>
+        </div>))}
+        {aTab==="listings"&&items.map(it=>(<div key={it.id} style={{...CARD,borderRadius:16,padding:14,marginBottom:10,borderLeft:`4px solid ${it.status==="active"?P.grn:P.red}`}}>
+          <div style={{display:"flex",gap:10,alignItems:"center"}}>
+            <div style={{width:44,height:44,borderRadius:12,background:P.lite,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{it.photo&&it.photo.startsWith("http")?"🖼️":it.photo}</div>
+            <div style={{flex:1}}><div style={{fontWeight:800,fontSize:13}}>{it.title}</div><div style={{fontSize:13,color:P.blue,fontWeight:700}}>{fp(it.price)}</div><div style={{fontSize:11,color:P.mid}}>👁{it.views}</div></div>
+            <button onClick={()=>setItems(p=>p.map(l=>l.id===it.id?{...l,status:l.status==="active"?"suspended":"active"}:l))} style={{padding:"7px 12px",background:it.status==="active"?P.redL:P.grnL,color:it.status==="active"?P.red:P.grn,border:"none",borderRadius:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>{it.status==="active"?"🚫":"✓"}</button>
+          </div>
+        </div>))}
+        {aTab==="reports"&&(reps.length===0?<div style={{textAlign:"center",padding:"50px 0",color:P.soft}}><div style={{fontSize:40}}>⚠️</div></div>:reps.map(r=>(<div key={r.id} style={{...CARD,borderRadius:16,padding:14,marginBottom:10,borderLeft:`4px solid ${r.status==="pending"?P.gold:r.status==="resolved"?P.grn:P.red}`}}>
+          <div style={{fontWeight:800,fontSize:14,marginBottom:4}}>{r.title}</div>
+          <div style={{fontSize:13,color:"#475569",marginBottom:6}}>📝 {r.reason}</div>
+          <div style={{fontSize:11,color:P.mid,marginBottom:r.status==="pending"?10:0}}>{r.date} · <span style={{color:r.status==="pending"?P.gold:r.status==="resolved"?P.grn:P.red,fontWeight:700}}>{r.status}</span></div>
+          {r.status==="pending"&&<div style={{display:"flex",gap:8}}>
+            <button onClick={()=>setReps(p=>p.map(x=>x.id===r.id?{...x,status:"resolved"}:x))} style={{flex:1,padding:"9px",background:P.grnL,color:P.grn,border:`1px solid ${P.grn}30`,borderRadius:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit",fontSize:12}}>✓ {t.approve}</button>
+            <button onClick={()=>setReps(p=>p.map(x=>x.id===r.id?{...x,status:"dismissed"}:x))} style={{flex:1,padding:"9px",background:P.redL,color:P.red,border:`1px solid ${P.red}30`,borderRadius:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit",fontSize:12}}>✗ {t.reject}</button>
+          </div>}
+        </div>)))}
+        {aTab==="txns"&&txns.map(tx=>(<div key={tx.id} style={{...CARD,borderRadius:16,padding:14,marginBottom:10}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+            <div style={{fontWeight:800,fontSize:14,flex:1,paddingRight:8}}>{tx.title}</div>
+            <span style={{fontSize:11,padding:"4px 10px",borderRadius:10,fontWeight:700,flexShrink:0,background:tx.status==="completed"?P.grnL:tx.status==="escrow"?"#fffbeb":P.redL,color:tx.status==="completed"?P.grn:tx.status==="escrow"?P.gold:P.red}}>{tx.status}</span>
+          </div>
+          <div style={{background:P.lite,borderRadius:11,padding:"11px 13px",marginBottom:tx.status==="escrow"?12:0}}>
+            {[["ዋጋ",fp(tx.amt),P.ink],["+"+t.comm,fp(tx.comm),P.gold]].map(([lb,v,col])=>(<div key={lb} style={{display:"flex",justifyContent:"space-between",fontSize:12,marginBottom:3}}><span style={{color:P.mid}}>{lb}</span><span style={{fontWeight:800,color:col}}>{v}</span></div>))}
+          </div>
+          {tx.status==="escrow"&&<button onClick={()=>doRelease(tx)} style={{background:P.lite,color:P.blue,border:`1.5px solid ${P.blue}`,borderRadius:12,padding:"10px",fontWeight:800,cursor:"pointer",width:"100%",fontFamily:"inherit",fontSize:13}}>✓ {t.release}</button>}
+        </div>))}
+      </div>}
+      </div>
+
+      {page!=="chat"&&<div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,background:"#fff",borderTop:`1px solid ${P.border}`,display:"flex",justifyContent:"space-around",padding:"8px 4px 16px",boxShadow:"0 -8px 32px rgba(10,22,40,.09)",zIndex:50}}>
+        {[["home","🏠",t.home],["sell","➕",t.sell],["wallet","💳",t.wallet],["chats","💬",t.chats],["profile","👤","Profile"],...(me?.role==="admin"?[["admin","⚙️",t.admin]]:[])].map(([s,ic,lb])=>(<button key={s} onClick={()=>setPage(s)} style={{background:"none",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:2,padding:"0 6px"}}>
+          <div style={{width:36,height:36,borderRadius:12,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,background:page===s?`linear-gradient(135deg,${P.blue},${P.navy})`:"transparent"}}><span style={{filter:page===s?"brightness(0) invert(1)":"none"}}>{ic}</span></div>
+          <span style={{fontSize:9,fontWeight:700,color:page===s?P.blue:P.soft,fontFamily:"inherit"}}>{lb}</span>
+        </button>))}
+      </div>}
+
+      {modal==="buy"&&selItem&&<div style={{position:"fixed",inset:0,background:"rgba(10,22,40,0.65)",display:"flex",alignItems:"flex-end",justifyContent:"center",zIndex:200}}>
+        <div style={{background:"#fff",borderRadius:"30px 30px 0 0",padding:24,width:"100%",maxWidth:480,paddingBottom:34}}>
+          <div style={{width:44,height:5,borderRadius:3,background:P.border,margin:"0 auto 22px"}}/>
+          <div style={{fontWeight:900,fontSize:18,marginBottom:16}}>🛒 {t.confirmBuy}</div>
+          <div style={{background:P.lite,borderRadius:16,padding:16,marginBottom:16}}>
+            {[["ዋጋ",fp(selItem.price),P.ink],["+"+t.comm,"+"+fp(comm),P.gold],[t.total,fp(selItem.price+comm),P.blue]].map(([lb,v,col],i)=>(<div key={i} style={{display:"flex",justifyContent:"space-between",padding:"7px 0",borderTop:i>0?`1px solid ${P.border}`:"none",fontSize:i===2?15:13}}><span style={{color:P.mid}}>{lb}</span><span style={{fontWeight:i===2?900:700,color:col}}>{v}</span></div>))}
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:12,background:P.grnL,borderRadius:14,padding:"13px 16px",marginBottom:20}}>
+            <span style={{fontSize:22}}>💳</span>
+            <div style={{flex:1}}><div style={{fontSize:12,color:P.mid}}>{t.balance}</div><div style={{fontWeight:900,color:P.grn,fontSize:15}}>{fp(c.wallet)}</div></div>
+            <div style={{fontSize:12,fontWeight:800,color:P.grnD}}>→ {fp((c.wallet||0)-(selItem.price+comm))}</div>
+          </div>
+          <div style={{display:"flex",gap:10}}>
+            <button onClick={()=>setModal(null)} style={{flex:1,padding:13,background:P.pale,border:"none",borderRadius:14,fontWeight:700,cursor:"pointer",fontFamily:"inherit",color:P.mid}}>{t.cancel}</button>
+            <button onClick={doBuy} style={{flex:2,padding:13,background:`linear-gradient(135deg,${P.blue},${P.navy})`,color:"#fff",border:"none",borderRadius:14,fontWeight:900,cursor:"pointer",fontFamily:"inherit",fontSize:15}}>{t.payWallet}</button>
+          </div>
+        </div>
+      </div>}
+
+      {modal==="deposit"&&<div style={{position:"fixed",inset:0,background:"rgba(10,22,40,0.65)",display:"flex",alignItems:"flex-end",justifyContent:"center",zIndex:200}}>
+        <div style={{background:"#fff",borderRadius:"30px 30px 0 0",padding:24,width:"100%",maxWidth:480,paddingBottom:34,maxHeight:"90vh",overflowY:"auto"}}>
+          <div style={{width:44,height:5,borderRadius:3,background:P.border,margin:"0 auto 22px"}}/>
+          <div style={{fontWeight:900,fontSize:18,marginBottom:16}}>⬇️ {t.deposit}</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:14}}>
+            {DEP.map(a=>(<button key={a} onClick={()=>{setDepAmt(a);setDepCustom("")}} style={{padding:"13px 5px",borderRadius:14,fontFamily:"inherit",fontWeight:800,cursor:"pointer",fontSize:12,border:`1.5px solid ${depAmt===a&&!depCustom?P.blue:P.border}`,background:depAmt===a&&!depCustom?P.lite:"#fff",color:depAmt===a&&!depCustom?P.blue:P.mid}}>{fp(a)}</button>))}
+          </div>
+          <input style={{...INP,marginBottom:14}} type="number" value={depCustom} onChange={e=>setDepCustom(e.target.value)} placeholder="ወይስ ሌላ (ብር)"/>
+          <div style={{marginBottom:18}}>
+            <div style={{fontSize:12,fontWeight:800,color:"#475569",marginBottom:8}}>{t.depWith}</div>
+            {PAYS.map(p2=>(<button key={p2} onClick={()=>setDepVia(p2)} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 15px",borderRadius:14,width:"100%",marginBottom:8,border:`1.5px solid ${depVia===p2?P.blue:P.border}`,background:depVia===p2?P.lite:"#fff",color:depVia===p2?P.blue:P.mid,fontWeight:700,textAlign:"left",cursor:"pointer",fontFamily:"inherit",fontSize:13}}>
+              <span style={{fontSize:20}}>{"📱🏦🏛️"[PAYS.indexOf(p2)]}</span>{p2}{depVia===p2&&<span style={{marginLeft:"auto"}}>✓</span>}
+            </button>))}
+          </div>
+          <div style={{display:"flex",gap:10}}>
+            <button onClick={()=>setModal(null)} style={{flex:1,padding:13,background:P.pale,border:"none",borderRadius:14,fontWeight:700,cursor:"pointer",fontFamily:"inherit",color:P.mid}}>{t.cancel}</button>
+            <button onClick={doDep} style={{flex:2,padding:13,background:`linear-gradient(135deg,${P.grn},#047857)`,color:"#fff",border:"none",borderRadius:14,fontWeight:900,cursor:"pointer",fontFamily:"inherit"}}>{t.confirmDep}</button>
+          </div>
+        </div>
+      </div>}
+
+      {modal==="withdraw"&&<div style={{position:"fixed",inset:0,background:"rgba(10,22,40,0.65)",display:"flex",alignItems:"flex-end",justifyContent:"center",zIndex:200}}>
+        <div style={{background:"#fff",borderRadius:"30px 30px 0 0",padding:24,width:"100%",maxWidth:480,paddingBottom:34}}>
+          <div style={{width:44,height:5,borderRadius:3,background:P.border,margin:"0 auto 22px"}}/>
+          <div style={{fontWeight:900,fontSize:18,marginBottom:16}}>⬆️ {t.withdraw}</div>
+          <div style={{background:P.goldL,borderRadius:14,padding:"13px 16px",marginBottom:16}}>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:4}}><span style={{color:P.goldD}}>{t.balance}</span><span style={{fontWeight:900,color:P.goldD}}>{fp(c.wallet)}</span></div>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:6}}><span style={{color:P.goldD}}>ዝቅተኛ ቀሪ</span><span style={{fontWeight:700,color:P.goldD}}>- {fp(MIN_BAL)}</span></div>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:14,borderTop:`1px solid ${P.gold}30`,paddingTop:8}}><span style={{fontWeight:800,color:P.goldD}}>{t.available}</span><span style={{fontWeight:900,color:P.gold}}>{fp(avail)}</span></div>
+          </div>
+          <input style={{...INP,marginBottom:14}} type="number" value={wdAmt} onChange={e=>setWdAmt(e.target.value)} placeholder={`ፈጥ. ${fp(avail)}`}/>
+          <div style={{marginBottom:16}}>
+            {PAYS.map(p2=>(<button key={p2} onClick={()=>setWdVia(p2)} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 15px",borderRadius:14,width:"100%",marginBottom:8,border:`1.5px solid ${wdVia===p2?P.blue:P.border}`,background:wdVia===p2?P.lite:"#fff",color:wdVia===p2?P.blue:P.mid,fontWeight:700,textAlign:"left",cursor:"pointer",fontFamily:"inherit",fontSize:13}}>
+              <span style={{fontSize:20}}>{"📱🏦🏛️"[PAYS.indexOf(p2)]}</span>{p2}{wdVia===p2&&<span style={{marginLeft:"auto"}}>✓</span>}
+            </button>))}
+          </div>
+          {wdAmt&&Number(wdAmt)>avail&&<div style={{background:P.redL,borderRadius:11,padding:"10px 13px",marginBottom:14,fontSize:12,color:P.red,fontWeight:700}}>⚠️ {t.lowBal}</div>}
+          <div style={{display:"flex",gap:10}}>
+            <button onClick={()=>setModal(null)} style={{flex:1,padding:13,background:P.pale,border:"none",borderRadius:14,fontWeight:700,cursor:"pointer",fontFamily:"inherit",color:P.mid}}>{t.cancel}</button>
+            <button onClick={doWd} style={{flex:2,padding:13,background:`linear-gradient(135deg,${P.gold},${P.goldD})`,color:"#fff",border:"none",borderRadius:14,fontWeight:900,cursor:"pointer",fontFamily:"inherit"}}>{t.confirmWd}</button>
+          </div>
+        </div>
+      </div>}
+
+      {modal==="report"&&<div style={{position:"fixed",inset:0,background:"rgba(10,22,40,0.65)",display:"flex",alignItems:"flex-end",justifyContent:"center",zIndex:200}}>
+        <div style={{background:"#fff",borderRadius:"30px 30px 0 0",padding:24,width:"100%",maxWidth:480,paddingBottom:34}}>
+          <div style={{width:44,height:5,borderRadius:3,background:P.border,margin:"0 auto 22px"}}/>
+          <div style={{fontWeight:900,fontSize:18,color:P.red,marginBottom:16}}>⚠️ {t.report}</div>
+          <textarea style={{...INP,resize:"none",marginBottom:16,minHeight:100}} rows={4} value={repReason} onChange={e=>setRepReason(e.target.value)} placeholder={t.reasonPh}/>
+          <div style={{display:"flex",gap:10}}>
+            <button onClick={()=>{setModal(null);setRepReason("")}} style={{flex:1,padding:13,background:P.pale,border:"none",borderRadius:14,fontWeight:700,cursor:"pointer",fontFamily:"inherit",color:P.mid}}>{t.cancel}</button>
+            <button onClick={doReport} style={{flex:2,padding:13,background:`linear-gradient(135deg,${P.red},#991b1b)`,color:"#fff",border:"none",borderRadius:14,fontWeight:900,cursor:"pointer",fontFamily:"inherit"}}>{t.sendRep}</button>
+          </div>
+        </div>
+      </div>}
+
+      {toast&&<div style={{position:"fixed",bottom:94,left:"50%",transform:"translateX(-50%)",background:toast.err?P.red:P.grn,color:"#fff",padding:"13px 24px",borderRadius:24,fontWeight:700,fontSize:13,zIndex:999,whiteSpace:"nowrap"}}>{toast.m}</div>}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
